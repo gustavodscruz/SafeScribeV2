@@ -24,6 +24,11 @@ public class AuthController : ControllerBase
         _passwordHasher = passwordHasher;
     }
 
+    /// <summary>
+    /// Realiza o login do usuário com usuário e senha.
+    /// </summary>
+    /// <param name="model">DTO contendo UserName e Password.</param>
+    /// <returns>200 com token gerado em caso de sucesso; 400 em caso de erro.</returns>
     [HttpPost("login")]
     [AllowAnonymous]
     public IActionResult Login([FromBody] LoginRequestDTO model)
@@ -47,6 +52,11 @@ public class AuthController : ControllerBase
         return Ok(new { generatedToken });
     }
 
+    /// <summary>
+    /// Registra um novo usuário (armazenamento em memória).
+    /// </summary>
+    /// <param name="model">DTO contendo Username, Password e Role.</param>
+    /// <returns>200 se o usuário for criado; 400 em caso de erro.</returns>
     [HttpPost("register")]
     [AllowAnonymous]
     public IActionResult Register([FromBody] UserRegisterDTO model)
@@ -67,7 +77,10 @@ public class AuthController : ControllerBase
         users.Add(new User { Username = model.Username, PasswordHash = hashed, Role = model.Role });
         return Ok("Usuário salvo com sucesso");
     }
-
+    /// <summary>
+    /// Endpoint protegido que retorna dados apenas para usuários autenticados.
+    /// </summary>
+    /// <returns>Mensagem de boas-vindas com o nome do usuário autenticado.</returns>
     [HttpGet("dados-protegidos")]
     [Authorize]
     public IActionResult GetDadosProtegidos()

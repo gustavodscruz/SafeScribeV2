@@ -20,6 +20,11 @@ public class NotasController : ControllerBase
         _tokenService = tokenService;
     }
 
+    /// <summary>
+    /// Cria uma nova nota associada ao usuário autenticado.
+    /// </summary>
+    /// <param name="dto">DTO com título e conteúdo da nota.</param>
+    /// <returns>200 com a nota criada ou 400/401 em caso de erro.</returns>
     [Authorize(Roles = "Editor, Admin")]
     [HttpPost]
     public IActionResult CriarNota([FromBody] NoteCreateDTO dto)
@@ -52,6 +57,11 @@ public class NotasController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Obtém uma nota pelo id. Admins podem acessar qualquer nota; usuários comuns apenas as próprias.
+    /// </summary>
+    /// <param name="id">Id da nota.</param>
+    /// <returns>200 com a nota ou 400/404 em caso de erro/acesso negado.</returns>
     [HttpGet("/{id}")]
     [Authorize]
     public IActionResult ObterNota(int id)
@@ -81,6 +91,12 @@ public class NotasController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Atualiza uma nota existente. Editors podem atualizar apenas suas próprias notas; Admins qualquer nota.
+    /// </summary>
+    /// <param name="id">Id da nota a ser atualizada.</param>
+    /// <param name="dto">DTO com os novos título e conteúdo.</param>
+    /// <returns>200 com a nota atualizada ou 404/401 se não permitido.</returns>
     [HttpPut("/{id}")]
     [Authorize(Roles = "Editor, Admin")]
     public IActionResult AtualizarNota(int id, [FromBody] NoteCreateDTO dto)
@@ -110,7 +126,12 @@ public class NotasController : ControllerBase
 
         return Ok(nota);
     }
-
+    
+    /// <summary>
+    /// Exclui uma nota pelo id. Apenas Admins podem excluir notas.
+    /// </summary>
+    /// <param name="id">Id da nota a ser removida.</param>
+    /// <returns>204 se removido; 404 se não encontrado.</returns>
     [HttpDelete("/{id}")]
     [Authorize(Roles = "Admin")]
     public IActionResult DeletarNota(int id)
